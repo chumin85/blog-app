@@ -15,13 +15,13 @@ jobs:
 
       - name: Login to AWS ECR
         run: |
-          aws ecr get-login-password --region ${{ secrets.AWS_DEFAULT_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_DEFAULT_REGION }}.amazonaws.com
+          aws ecr get-login-password --region ${{ secrets.AWS_DEFAULT_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr${{ secrets.AWS_DEFAULT_REGION }}.amazonaws.com
 
       - name: Build and push Docker image
         run: |
           docker build -t my-app-image .
-          docker tag application:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_DEFAULT_REGION }}.amazonaws.com/application:latest
-          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_DEFAULT_REGION }}.amazonaws.com/application:latest
+          docker tag application:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr${{ secrets.AWS_DEFAULT_REGION }}.amazonaws.com/application:latest
+          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr${{ secrets.AWS_DEFAULT_REGION }}.amazonaws.com/application:latest
 
       - name: Generate Kubernetes manifests
         run: |
