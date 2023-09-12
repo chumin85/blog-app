@@ -15,18 +15,44 @@ jobs:
 
       - name: Login to AWS ECR
         run: |
-          aws ecr get-login-password --region ${{ secrets.AWS_DEFAULT_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr${{ secrets.AWS_DEFAULT_REGION }}.amazonaws.com
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 100456454579.dkr.ecr.us-east-1.amazonaws.com
 
       - name: Build and push Docker image
         run: |
-          docker build -t my-app-image .
-          docker tag application:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr${{ secrets.AWS_DEFAULT_REGION }}.amazonaws.com/application:latest
-          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr${{ secrets.AWS_DEFAULT_REGION }}.amazonaws.com/application:latest
+          docker build -t application .
+          docker tag application:latest 100456454579.dkr.ecr.us-east-1.amazonaws.com/application:latest
+          docker push 100456454579.dkr.ecr.us-east-1.amazonaws.com/application:latest
 
       - name: Generate Kubernetes manifests
         run: |
-          # Generate your Kubernetes manifests here
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: myapp-deployment
+          spec:
+            replicas: 2       # Number of replicas (pods) for your application
+            selector:
+              matchLabels:
+                app: myapp
+            template:
+              metadata:
+                labels:
+                  app: myapp
+              spec:
+                containers:
+                  - name: myapp-container
+                    image: myapp:latest   # Reference to your Docker image
+                    ports:
+                      - containerPort: 80      # Port your application listens on
+                    resources:
+                      requests:
+                        memory: "64Mi"         # Minimum memory required
+                        cpu: "250m"            # Minimum CPU required
+                      limits:
+                        memory: "128Mi"        # Maximum memory allowed
+                        cpu: "500m"            # Maximum CPU allowed
 
       - name: Deploy to Kubernetes
         run: |
           # Use kubectl or a Kubernetes deployment tool to apply your manifests
+          
