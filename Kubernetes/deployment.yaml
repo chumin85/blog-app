@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-deployment
+spec:
+  replicas: 2       # Number of replicas (pods) for your application
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      containers:
+        - name: myapp-container
+          image: myapp:latest   # Reference to your Docker image
+          ports:
+            - containerPort: 80      # Port your application listens on
+          resources:
+            requests:
+              memory: "64Mi"         # Minimum memory required
+              cpu: "250m"            # Minimum CPU required
+            limits:
+              memory: "128Mi"        # Maximum memory allowed
+              cpu: "500m"            # Maximum CPU allowed
