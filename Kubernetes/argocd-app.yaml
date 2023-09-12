@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd-server
+  namespace: argocd
+spec:
+  destination:
+    server: 'https://kubernetes.default.svc'  # The Kubernetes API server URL
+    namespace: argocd
+  source:
+    repoURL: 'https://github.com/chumin85/blog-app.git'  # URL of your Git repository
+    path: 'argocd'  # Path to your ArgoCD application manifests within the Git repository
+    targetRevision: 'HEAD'  # Git branch, tag, or commit to sync
+  project: default  # ArgoCD project to use (create if it doesn't exist)
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
